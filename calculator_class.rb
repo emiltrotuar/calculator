@@ -6,16 +6,12 @@ class Calculator
 	end
 
 	def plus
-		@numbers.inject(0) do |sum,i|
-			sum+=i
-		end
+		@numbers.inject(0,:+)
 	end
 
 	def minus
 		first = @numbers.shift
-		@numbers.inject(first) do |sum,i|
-			sum-=i
-		end
+		@numbers.inject(first,:-)
 	end
 
 	def clear

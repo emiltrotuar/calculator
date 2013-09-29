@@ -7,12 +7,12 @@ accepted = false
 until accepted
 	do_break = false
 	numbers = gets.split.each do |i|
-  	unless i[/(^\d+$|^-\d+$)/]
+  	unless i[/^-?\d+$/]
 	  	puts "Please enter a valid input"
 	  	do_break = true
   	end
-  end.map { |s| s.to_i }
-  next if do_break == true
+  end.map(&:to_i)
+  next if do_break
   if numbers.count < 2
   	puts "Please enter 2 or more numbers"
   	next
