@@ -3,47 +3,49 @@ require './calculator_class'
 
 describe  Calculator do
 
+	let(:input)  {double('input').as_null_object}
+	let(:output) {double('output').as_null_object}
+
 	describe "with valid input" do
 
-		before(:each) { @calculator = Calculator.new([1,2,3,-4]) }
+		let :calculator do
+			input.stub(:gets).and_return "1 2 3 -4\n"  
+			Calculator.new input, output 
+		end
 
-		subject { @calculator }
-
-		it { should respond_to(:numbers) }
+		it "should initialize calculator" do
+			output.should_receive(:puts).with "Enter numbers divided by spaces" 
+			calculator.numbers.should eq [1,2,3,-4]
+		end
 
 		it "should add the numbers" do
-			@calculator.plus.should eq 2
+			output.should_receive(:puts).with "Result of adding: 2"
+			calculator.plus
 		end
 
 		it "should subtract the numbers" do
-			@calculator.minus.should eq 0
+			output.should_receive(:puts).with "Result of subtraction: 0"
+			calculator.minus
 		end
 		
 		it "should clear array" do
-			@calculator.clear
-			@calculator.numbers.should eq []
+			calculator.clear
+			calculator.numbers.should eq []
 		end
-
-		it "should not respond to nonexistent method" do
-			expect do 
-				@calculator.non_existent_method
-			end.to raise_error(NameError)
-		end
-
 	end
 
-	describe "with invalid input invoking 'plus' and 'minus' methods" do
+	describe "with invalid input" do
 
-		it "should raise error" do
-			@calculator = Calculator.new([1,"a",3,-4])
-			expect do
-			  @calculator.plus
-			end.to raise_error(TypeError)
-			expect do
-			  @calculator.minus
-			end.to raise_error(TypeError)
+		it "should ask for new input if got not a number" do
+			output.should_receive(:puts).with "Please enter a valid input" 
+			input.stub(:gets).and_return "1 a 3 w\n", "1 2 3 4\n"  
+			Calculator.new input, output
 		end
 
+		it "should take not less than 2 numbers" do
+			output.should_receive(:puts).with("Please enter 2 or more numbers").twice
+			input.stub(:gets).and_return "\n", "1\n", "1 2\n"  
+			Calculator.new input, output
+		end
 	end
-
 end
